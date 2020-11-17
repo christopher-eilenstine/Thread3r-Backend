@@ -8,6 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface Thread3rUserRepository extends JpaRepository<Thread3rUser, Long> {
+
     Optional<Thread3rUser> findByUsername(String username);
     Boolean existsByUsername(String username);
     Boolean existsByEmail(String email);
