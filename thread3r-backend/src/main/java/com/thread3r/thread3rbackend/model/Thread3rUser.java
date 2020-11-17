@@ -8,7 +8,10 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -29,13 +32,21 @@ public class Thread3rUser {
 
     @Email
     @NotBlank
+    @Size(max = 25)
     private String email;
 
     @NotBlank
+    @Size(max = 50)
     private String username;
 
     @NotBlank
     private String password;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "group_membership",
+               joinColumns = @JoinColumn(name = "membership_user_id"),
+               inverseJoinColumns = @JoinColumn(name = "membership_group_id"))
+    private Set<Thread3rGroup> groups = new HashSet<>();
 
     public Thread3rUser(String email, String username, String password) {
         this.email = email;
