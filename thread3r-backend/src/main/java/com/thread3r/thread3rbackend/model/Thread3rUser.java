@@ -32,11 +32,11 @@ public class Thread3rUser {
 
     @Email
     @NotBlank
-    @Size(max = 25)
+    @Size(max = 50)
     private String email;
 
     @NotBlank
-    @Size(max = 50)
+    @Size(max = 25)
     private String username;
 
     @NotBlank

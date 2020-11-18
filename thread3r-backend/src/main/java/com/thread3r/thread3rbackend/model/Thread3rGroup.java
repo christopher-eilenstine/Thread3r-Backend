@@ -9,6 +9,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -42,6 +44,12 @@ public class Thread3rGroup {
     @Column(name = "group_user_id")
     @NotNull
     private Long userId;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "group_membership",
+                joinColumns = @JoinColumn(name = "membership_group_id"),
+                inverseJoinColumns = @JoinColumn(name = "membership_user_id"))
+    private Set<Thread3rUser> users = new HashSet<>();
 
     public Thread3rGroup(Long userId, String name, String description) {
         this.userId = userId;
