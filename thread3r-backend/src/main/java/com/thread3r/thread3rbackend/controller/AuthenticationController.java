@@ -1,9 +1,9 @@
 package com.thread3r.thread3rbackend.controller;
 
-import com.thread3r.thread3rbackend.dto.LoginRequest;
-import com.thread3r.thread3rbackend.dto.RegisterRequest;
+import com.thread3r.thread3rbackend.dto.auth.LoginRequest;
+import com.thread3r.thread3rbackend.dto.auth.RegisterRequest;
 import com.thread3r.thread3rbackend.dto.Response;
-import com.thread3r.thread3rbackend.dto.TokenResponse;
+import com.thread3r.thread3rbackend.dto.auth.TokenResponse;
 import com.thread3r.thread3rbackend.model.Thread3rUser;
 import com.thread3r.thread3rbackend.repository.Thread3rUserRepository;
 import com.thread3r.thread3rbackend.security.AuthenticationUtils;

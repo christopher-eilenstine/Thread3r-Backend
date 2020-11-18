@@ -1,4 +1,4 @@
-package com.thread3r.thread3rbackend.dto;
+package com.thread3r.thread3rbackend.dto.auth;
 
 import lombok.Getter;
 import lombok.Setter;
