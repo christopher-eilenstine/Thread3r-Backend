@@ -1,11 +1,13 @@
 package com.thread3r.thread3rbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -39,12 +41,17 @@ public class GroupEntity extends Thread3rEntity {
     @Column(name = "description", nullable = false)
     private String description;
 
-    /*
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "group_membership",
-                joinColumns = @JoinColumn(name = "membership_group_id"),
-                inverseJoinColumns = @JoinColumn(name = "membership_user_id"))
-    private Set<Thread3rUser> users = new HashSet<>();
-    */
+    @JoinTable(name = "group_membership", indexes = {
+            @Index(columnList = "group_id", name = "ix_membership_groupid"),
+            @Index(columnList = "user_id", name = "ix_membership_userid")
+    },
+            joinColumns = @JoinColumn(name = "group_id",
+                    foreignKey = @ForeignKey(name = "fk_membership_group")),
+            inverseJoinColumns = @JoinColumn(name = "user_id",
+                    foreignKey = @ForeignKey(name = "fk_membership_user"))
+    )
+    private Set<UserEntity> members;
 
 }

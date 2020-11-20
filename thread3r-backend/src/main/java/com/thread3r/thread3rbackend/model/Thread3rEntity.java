@@ -1,15 +1,12 @@
 package com.thread3r.thread3rbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Optional;
 
 @Getter
@@ -17,12 +14,15 @@ import java.util.Optional;
 @MappedSuperclass
 public abstract class Thread3rEntity implements Serializable {
 
+    @JsonIgnore
     @Column(name = "created_ts", nullable = false)
     private LocalDateTime createdTimestamp;
 
+    @JsonIgnore
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
 
+    @JsonIgnore
     @Column(name = "deleted_ts")
     private LocalDateTime deletedTimestamp;
 

@@ -15,6 +15,6 @@ public interface Thread3rGroupRepository extends JpaRepository<GroupEntity, Long
     List<GroupEntity> findByUserId(Long userId);
     Boolean existsByName(String name);
     boolean existsById(Long id);
-    Optional<GroupEntity> findByName(String name);
+    Optional<GroupEntity> findByNameContaining(String name);
 
 }

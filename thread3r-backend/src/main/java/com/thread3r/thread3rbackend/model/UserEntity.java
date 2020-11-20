@@ -40,12 +40,7 @@ public class UserEntity extends Thread3rEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
-    /*
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "group_membership",
-            joinColumns = @JoinColumn(name = "membership_user_id"),
-            inverseJoinColumns = @JoinColumn(name = "membership_group_id"))
-    private Set<Thread3rGroup> groups = new HashSet<>();
-    */
+    @ManyToMany(mappedBy = "members", fetch = FetchType.LAZY)
+    private Set<GroupEntity> subscribed;
 
 }
