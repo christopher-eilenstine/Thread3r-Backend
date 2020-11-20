@@ -1,7 +1,7 @@
 package com.thread3r.thread3rbackend.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.thread3r.thread3rbackend.model.Thread3rUser;
+import com.thread3r.thread3rbackend.model.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 
 @AllArgsConstructor
 @Getter
@@ -25,7 +24,7 @@ public class UserDetailsImpl implements UserDetails {
     @JsonIgnore
     private String password;
 
-    public static UserDetailsImpl build(Thread3rUser user) {
+    public static UserDetailsImpl build(UserEntity user) {
         return new UserDetailsImpl(
                 user.getId(),
                 user.getEmail(),

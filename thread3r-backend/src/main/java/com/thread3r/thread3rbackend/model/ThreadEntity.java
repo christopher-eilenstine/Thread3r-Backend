@@ -1,5 +1,6 @@
 package com.thread3r.thread3rbackend.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,27 +13,32 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @Entity
-@Table(name = "comment")
+@Table(name = "thread")
 @NoArgsConstructor
-public class Thread3rComment extends Thread3rEntity {
+public class ThreadEntity extends Thread3rEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank
+    @Size(max = 60)
+    private String title;
+
+    @NotBlank
     @Size(max = 600)
     private String content;
 
-    @Column(name = "comment_thread_id", nullable = false)
-    private Long threadId;
+    @Column(name = "thread_group_id", nullable = false)
+    private Long groupId;
 
-    @Column(name = "comment_user_id", nullable = false)
+    @Column(name = "thread_user_id", nullable = false)
     private Long userId;
 
-    public Thread3rComment(String content, Long threadId, Long userId) {
+    public ThreadEntity(String title, String content, Long groupId, Long userId) {
+        this.title = title;
         this.content = content;
-        this.threadId = threadId;
+        this.groupId = groupId;
         this.userId = userId;
     }
 

@@ -4,7 +4,7 @@ import com.thread3r.thread3rbackend.dto.auth.LoginRequest;
 import com.thread3r.thread3rbackend.dto.auth.RegisterRequest;
 import com.thread3r.thread3rbackend.dto.Response;
 import com.thread3r.thread3rbackend.dto.auth.TokenResponse;
-import com.thread3r.thread3rbackend.model.Thread3rUser;
+import com.thread3r.thread3rbackend.model.UserEntity;
 import com.thread3r.thread3rbackend.repository.Thread3rUserRepository;
 import com.thread3r.thread3rbackend.security.AuthenticationUtils;
 import com.thread3r.thread3rbackend.security.UserDetailsImpl;
@@ -60,7 +60,7 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().body(new Response("Email is already taken!"));
         }
 
-        Thread3rUser user = new Thread3rUser(registerRequest.getEmail(), registerRequest.getUsername(),
+        UserEntity user = new UserEntity(registerRequest.getEmail(), registerRequest.getUsername(),
                 encoder.encode(registerRequest.getPassword()));
 
         userRepository.save(user);

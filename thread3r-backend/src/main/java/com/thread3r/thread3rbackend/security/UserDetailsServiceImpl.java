@@ -1,6 +1,6 @@
 package com.thread3r.thread3rbackend.security;
 
-import com.thread3r.thread3rbackend.model.Thread3rUser;
+import com.thread3r.thread3rbackend.model.UserEntity;
 import com.thread3r.thread3rbackend.repository.Thread3rUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +19,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Thread3rUser user = repository.findByUsername(username).orElseThrow(
+        UserEntity user = repository.findByUsername(username).orElseThrow(
                 () -> new UsernameNotFoundException("User not found with username: " + username)
         );
         return UserDetailsImpl.build(user);
