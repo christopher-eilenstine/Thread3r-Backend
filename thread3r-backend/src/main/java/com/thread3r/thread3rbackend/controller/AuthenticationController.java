@@ -5,7 +5,7 @@ import com.thread3r.thread3rbackend.dto.auth.RegisterRequest;
 import com.thread3r.thread3rbackend.dto.Response;
 import com.thread3r.thread3rbackend.dto.auth.TokenResponse;
 import com.thread3r.thread3rbackend.model.UserEntity;
-import com.thread3r.thread3rbackend.repository.Thread3rUserRepository;
+import com.thread3r.thread3rbackend.repository.UserRepository;
 import com.thread3r.thread3rbackend.security.AuthenticationUtils;
 import com.thread3r.thread3rbackend.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +26,12 @@ public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
     private final AuthenticationUtils authenticationUtils;
-    private final Thread3rUserRepository userRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder encoder;
 
     @Autowired
     public AuthenticationController(AuthenticationManager authenticationManager, AuthenticationUtils authenticationUtils,
-                                    Thread3rUserRepository userRepository, PasswordEncoder encoder) {
+                                    UserRepository userRepository, PasswordEncoder encoder) {
         this.authenticationManager = authenticationManager;
         this.authenticationUtils = authenticationUtils;
         this.userRepository = userRepository;
@@ -60,8 +60,11 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().body(new Response("Email is already taken!"));
         }
 
-        UserEntity user = new UserEntity(registerRequest.getEmail(), registerRequest.getUsername(),
-                encoder.encode(registerRequest.getPassword()));
+        UserEntity user = UserEntity.builder()
+                .email(registerRequest.getEmail())
+                .username(registerRequest.getUsername())
+                .password(encoder.encode(registerRequest.getPassword()))
+                .build();
 
         userRepository.save(user);
         return ResponseEntity.ok(new Response("User registered successfully!"));

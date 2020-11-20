@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface Thread3rThreadRepository extends JpaRepository<ThreadEntity, Long> {
+public interface ThreadRepository extends JpaRepository<ThreadEntity, Long> {
 
     List<ThreadEntity> findByUserId(Long userId);
     List<ThreadEntity> findByGroupId(Long groupId);

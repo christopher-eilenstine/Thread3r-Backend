@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface Thread3rGroupRepository extends JpaRepository<GroupEntity, Long> {
+public interface GroupRepository extends JpaRepository<GroupEntity, Long> {
 
     Optional<GroupEntity> findById(Long id);
     List<GroupEntity> findByUserId(Long userId);
     Boolean existsByName(String name);
     boolean existsById(Long id);
-    Optional<GroupEntity> findByName(String name);
+    List<GroupEntity> findByNameContaining(String name);
 
 }
