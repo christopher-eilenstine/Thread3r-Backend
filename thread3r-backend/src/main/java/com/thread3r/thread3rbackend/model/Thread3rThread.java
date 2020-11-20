@@ -29,12 +29,10 @@ public class Thread3rThread extends Thread3rEntity {
     @Size(max = 600)
     private String content;
 
-    @NotNull
-    @Column(name = "thread_group_id")
+    @Column(name = "thread_group_id", nullable = false)
     private Long groupId;
 
-    @NotNull
-    @Column(name = "thread_user_id")
+    @Column(name = "thread_user_id", nullable = false)
     private Long userId;
 
     public Thread3rThread(String title, String content, Long groupId, Long userId) {

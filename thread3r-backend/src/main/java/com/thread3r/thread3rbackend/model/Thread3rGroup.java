@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,8 +31,7 @@ public class Thread3rGroup extends Thread3rEntity {
     @Size(max = 600)
     private String description;
 
-    @Column(name = "group_user_id")
-    @NotNull
+    @Column(name = "group_user_id", nullable = false)
     private Long userId;
 
     @ManyToMany(fetch = FetchType.LAZY)

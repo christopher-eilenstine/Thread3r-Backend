@@ -24,12 +24,10 @@ public class Thread3rComment extends Thread3rEntity {
     @Size(max = 600)
     private String content;
 
-    @NotNull
-    @Column(name = "comment_thread_id")
+    @Column(name = "comment_thread_id", nullable = false)
     private Long threadId;
 
-    @NotNull
-    @Column(name = "comment_user_id")
+    @Column(name = "comment_user_id", nullable = false)
     private Long userId;
 
     public Thread3rComment(String content, Long threadId, Long userId) {
