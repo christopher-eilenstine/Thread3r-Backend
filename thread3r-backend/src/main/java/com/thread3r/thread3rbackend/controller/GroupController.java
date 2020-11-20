@@ -10,7 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import javax.validation.Valid;import java.util.List;
 
 
 @RestController
@@ -23,6 +23,11 @@ public class GroupController {
     @Autowired
     public GroupController(GroupService groupService) {
         this.groupService = groupService;
+    }
+
+    @GetMapping
+    public List<GroupDto> getGroups() {
+        return groupService.getGroups();
     }
 
     @PostMapping
@@ -44,4 +49,16 @@ public class GroupController {
         groupService.deleteGroup(groupId);
     }
 
+    @GetMapping("/search")
+    public List<GroupDto> searchGroups(@RequestParam String name) {
+        return groupService.getGroupsByName(name);
+    }
+
+    @GetMapping("/subscribed")
+    public List<GroupDto> getSubscribedGroups() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        return groupService.getSubscribedGroups(userDetails.getId());
+    }
 }
