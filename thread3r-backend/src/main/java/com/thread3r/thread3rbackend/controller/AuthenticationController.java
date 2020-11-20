@@ -60,8 +60,11 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().body(new Response("Email is already taken!"));
         }
 
-        UserEntity user = new UserEntity(registerRequest.getEmail(), registerRequest.getUsername(),
-                encoder.encode(registerRequest.getPassword()));
+        UserEntity user = UserEntity.builder()
+                .email(registerRequest.getEmail())
+                .username(registerRequest.getUsername())
+                .password(encoder.encode(registerRequest.getPassword()))
+                .build();
 
         userRepository.save(user);
         return ResponseEntity.ok(new Response("User registered successfully!"));

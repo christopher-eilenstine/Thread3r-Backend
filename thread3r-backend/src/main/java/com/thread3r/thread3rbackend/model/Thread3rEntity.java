@@ -2,12 +2,14 @@ package com.thread3r.thread3rbackend.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Optional;
 
 @Getter
@@ -16,21 +18,21 @@ import java.util.Optional;
 public abstract class Thread3rEntity implements Serializable {
 
     @Column(name = "created_ts", nullable = false)
-    private Instant createdTimestamp;
+    private LocalDateTime createdTimestamp;
 
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
 
     @Column(name = "deleted_ts")
-    private Instant deletedTimestamp;
+    private LocalDateTime deletedTimestamp;
 
-    public void markSoftDeleted(Instant timestamp) {
+    public void markSoftDeleted(LocalDateTime timestamp) {
         deleted = true;
         deletedTimestamp = timestamp;
     }
 
     @PrePersist
     protected void onPersist() {
-        createdTimestamp = Optional.ofNullable(createdTimestamp).orElseGet(Instant::now);
+        createdTimestamp = Optional.ofNullable(createdTimestamp).orElse(LocalDateTime.now());
     }
 }
