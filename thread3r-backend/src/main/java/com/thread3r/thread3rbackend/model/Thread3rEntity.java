@@ -14,15 +14,12 @@ import java.util.Optional;
 @MappedSuperclass
 public abstract class Thread3rEntity implements Serializable {
 
-    @JsonIgnore
     @Column(name = "created_ts", nullable = false)
     private LocalDateTime createdTimestamp;
 
-    @JsonIgnore
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
 
-    @JsonIgnore
     @Column(name = "deleted_ts")
     private LocalDateTime deletedTimestamp;
 

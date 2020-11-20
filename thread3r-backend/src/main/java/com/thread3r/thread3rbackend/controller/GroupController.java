@@ -1,20 +1,16 @@
 package com.thread3r.thread3rbackend.controller;
 
 import com.thread3r.thread3rbackend.dto.GroupDto;
-import com.thread3r.thread3rbackend.model.GroupEntity;
-import com.thread3r.thread3rbackend.model.UserEntity;
-import com.thread3r.thread3rbackend.repository.Thread3rGroupRepository;
-import com.thread3r.thread3rbackend.repository.Thread3rUserRepository;
 import com.thread3r.thread3rbackend.security.UserDetailsImpl;
+import com.thread3r.thread3rbackend.service.GroupService;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashSet;
-import java.util.Optional;
 
 
 @RestController
@@ -22,32 +18,30 @@ import java.util.Optional;
 @CrossOrigin(origins = {"http://localhost:3000"})
 public class GroupController {
 
-    private final Thread3rGroupRepository groupRepository;
-    private final Thread3rUserRepository userRepository;
+    private final GroupService groupService;
 
     @Autowired
-    public GroupController(Thread3rGroupRepository groupRepository, Thread3rUserRepository userRepository) {
-        this.groupRepository = groupRepository;
-        this.userRepository = userRepository;
+    public GroupController(GroupService groupService) {
+        this.groupService = groupService;
     }
 
     @PostMapping
-    public ResponseEntity<?> createGroup(@Valid @RequestBody GroupDto request) {
+    public GroupDto createGroup(@Valid @RequestBody GroupDto request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        GroupEntity group = GroupEntity.builder()
-                .userId(userDetails.getId())
-                .name(request.getName())
-                .description(request.getDescription())
-                .members(new HashSet<>())
-                .build();
+        return groupService.createGroup(userDetails.getId(), request);
+    }
 
-        userRepository.findById(userDetails.getId()).ifPresent(user -> group.getMembers().add(user));
+    @GetMapping("/{groupId}")
+    public GroupDto getGroup(@PathVariable Long groupId) {
+        return groupService.getGroup(groupId);
+    }
 
-        groupRepository.save(group);
-
-        return ResponseEntity.ok(group);
+    @DeleteMapping("/{groupId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteGroup(@PathVariable Long groupId) {
+        groupService.deleteGroup(groupId);
     }
 
 }

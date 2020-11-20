@@ -41,7 +41,6 @@ public class GroupEntity extends Thread3rEntity {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "group_membership", indexes = {
             @Index(columnList = "group_id", name = "ix_membership_groupid"),

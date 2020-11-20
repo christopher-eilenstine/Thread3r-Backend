@@ -5,7 +5,7 @@ import com.thread3r.thread3rbackend.dto.auth.RegisterRequest;
 import com.thread3r.thread3rbackend.dto.Response;
 import com.thread3r.thread3rbackend.dto.auth.TokenResponse;
 import com.thread3r.thread3rbackend.model.UserEntity;
-import com.thread3r.thread3rbackend.repository.Thread3rUserRepository;
+import com.thread3r.thread3rbackend.repository.UserRepository;
 import com.thread3r.thread3rbackend.security.AuthenticationUtils;
 import com.thread3r.thread3rbackend.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +26,12 @@ public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
     private final AuthenticationUtils authenticationUtils;
-    private final Thread3rUserRepository userRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder encoder;
 
     @Autowired
     public AuthenticationController(AuthenticationManager authenticationManager, AuthenticationUtils authenticationUtils,
-                                    Thread3rUserRepository userRepository, PasswordEncoder encoder) {
+                                    UserRepository userRepository, PasswordEncoder encoder) {
         this.authenticationManager = authenticationManager;
         this.authenticationUtils = authenticationUtils;
         this.userRepository = userRepository;

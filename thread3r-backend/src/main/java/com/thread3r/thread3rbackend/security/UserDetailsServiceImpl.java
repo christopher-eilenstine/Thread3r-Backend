@@ -1,7 +1,7 @@
 package com.thread3r.thread3rbackend.security;
 
 import com.thread3r.thread3rbackend.model.UserEntity;
-import com.thread3r.thread3rbackend.repository.Thread3rUserRepository;
+import com.thread3r.thread3rbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final Thread3rUserRepository repository;
+    private final UserRepository repository;
 
     @Autowired
-    public UserDetailsServiceImpl(Thread3rUserRepository repository) {
+    public UserDetailsServiceImpl(UserRepository repository) {
         this.repository = repository;
     }
 
