@@ -1,33 +1,25 @@
 package com.thread3r.thread3rbackend.model;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "thread")
 @NoArgsConstructor
-public class Thread3rThread {
+public class Thread3rThread extends Thread3rEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @CreatedDate
-    @NotNull
-    private Date createdTs;
-
-    @NotNull
-    private Boolean deleted;
-
-    private Date deletedTs;
 
     @NotBlank
     @Size(max = 60)
@@ -52,13 +44,4 @@ public class Thread3rThread {
         this.userId = userId;
     }
 
-    @PrePersist
-    public void prePersist() {
-        if (createdTs == null) {
-            createdTs = new Date();
-        }
-        if (deleted == null) {
-            deleted = Boolean.FALSE;
-        }
-    }
 }
