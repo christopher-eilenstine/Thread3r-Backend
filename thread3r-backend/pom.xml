@@ -83,6 +83,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>thread3r-backend</finalName>
 	</build>
 
 </project>
