@@ -1,7 +1,9 @@
 package com.thread3r.thread3rbackend.service;
 
 import com.thread3r.thread3rbackend.dto.GroupDto;
+import com.thread3r.thread3rbackend.exception.Thread3rEntityExistsException;
 import com.thread3r.thread3rbackend.exception.Thread3rNotFoundException;
+import com.thread3r.thread3rbackend.exception.Thread3rUnauthorizedException;
 import com.thread3r.thread3rbackend.model.GroupEntity;
 import com.thread3r.thread3rbackend.model.UserEntity;
 import com.thread3r.thread3rbackend.repository.GroupRepository;
@@ -28,6 +30,19 @@ public class GroupService {
     public List<GroupDto> getGroups() {
         List<GroupDto> groups = new ArrayList<>();
         groupRepository.findAll().forEach(group -> {
+            GroupDto groupDto = GroupDto.builder()
+                    .id(group.getId())
+                    .name(group.getName())
+                    .description(group.getDescription())
+                    .build();
+            groups.add(groupDto);
+        });
+        return groups;
+    }
+
+    public List<GroupDto> getGroupsByCreator(Long userId) {
+        List<GroupDto> groups = new ArrayList<>();
+        groupRepository.findByUserId(userId).forEach(group -> {
             GroupDto groupDto = GroupDto.builder()
                     .id(group.getId())
                     .name(group.getName())
@@ -75,7 +90,11 @@ public class GroupService {
     }
 
     public GroupDto createGroup(Long userId, GroupDto groupDto) {
-        GroupEntity groupEntity = GroupEntity.builder()
+        GroupEntity groupEntity = groupRepository.findByName(groupDto.getName()).orElse(null);
+        if (groupEntity == null) {
+            throw new Thread3rEntityExistsException();
+        }
+        groupEntity = GroupEntity.builder()
                 .userId(userId)
                 .name(groupDto.getName())
                 .description(groupDto.getDescription())
@@ -92,14 +111,17 @@ public class GroupService {
                 .build();
     }
 
-    // TODO: Check userId to ensure creator is deleting.
-    public void deleteGroup(Long groupId) {
+    public void deleteGroup(Long groupId, Long userId) {
         GroupEntity group = findGroup(groupId);
 
-        group.getMembers().forEach(user -> group.getMembers().remove(user));
-        groupRepository.save(group);
+        if (group.getUserId().equals(userId)) {
+            group.getMembers().forEach(user -> group.getMembers().remove(user));
+            groupRepository.save(group);
 
-        groupRepository.deleteById(groupId);
+            groupRepository.deleteById(groupId);
+        } else {
+            throw new Thread3rUnauthorizedException();
+        }
     }
 
     private GroupEntity findGroup(Long groupId) {

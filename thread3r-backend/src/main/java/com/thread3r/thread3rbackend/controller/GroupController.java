@@ -46,7 +46,10 @@ public class GroupController {
     @DeleteMapping("/{groupId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteGroup(@PathVariable Long groupId) {
-        groupService.deleteGroup(groupId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        groupService.deleteGroup(groupId, userDetails.getId());
     }
 
     @GetMapping("/search")
@@ -60,5 +63,13 @@ public class GroupController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         return groupService.getSubscribedGroups(userDetails.getId());
+    }
+
+    @GetMapping("/created")
+    public List<GroupDto> getCreatedGroups() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        return groupService.getGroupsByCreator(userDetails.getId());
     }
 }
