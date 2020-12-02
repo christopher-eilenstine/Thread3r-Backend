@@ -132,4 +132,23 @@ public class GroupService {
         return groupEntity.get();
     }
 
+    public void subscribeToGroup(Long groupId, Long userId) {
+        GroupEntity groupEntity = groupRepository.findById(groupId).orElse(null);
+        if (groupEntity == null) {
+            throw new Thread3rNotFoundException();
+        }
+        groupEntity.getMembers().add(userService.getUser(userId));
+        groupRepository.save(groupEntity);
+    }
+
+    // TODO: Add validation to prevent the creator of a group from unsubscribing from it
+    public void unsubscribeFromGroup(Long groupId, Long userId) {
+        GroupEntity groupEntity = groupRepository.findById(groupId).orElse(null);
+        if (groupEntity == null) {
+            throw new Thread3rNotFoundException();
+        }
+        groupEntity.getMembers().removeIf(member -> member.getId().equals(userId));
+        groupRepository.save(groupEntity);
+    }
+
 }

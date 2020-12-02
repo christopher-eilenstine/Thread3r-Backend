@@ -72,4 +72,23 @@ public class GroupController {
 
         return groupService.getGroupsByCreator(userDetails.getId());
     }
+
+    @PostMapping("/subscribe/{groupId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void subscribe(@PathVariable Long groupId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        groupService.subscribeToGroup(groupId, userDetails.getId());
+    }
+
+    @PostMapping("/unsubscribe/{groupId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void unsubscribe(@PathVariable Long groupId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        groupService.unsubscribeFromGroup(groupId, userDetails.getId());
+    }
+
 }
