@@ -32,6 +32,7 @@ public class GroupService {
         groupRepository.findAll().forEach(group -> {
             GroupDto groupDto = GroupDto.builder()
                     .id(group.getId())
+                    .creatorId(group.getUserId())
                     .name(group.getName())
                     .description(group.getDescription())
                     .build();
@@ -45,6 +46,7 @@ public class GroupService {
         groupRepository.findByUserId(userId).forEach(group -> {
             GroupDto groupDto = GroupDto.builder()
                     .id(group.getId())
+                    .creatorId(group.getUserId())
                     .name(group.getName())
                     .description(group.getDescription())
                     .build();
@@ -59,19 +61,7 @@ public class GroupService {
         user.getSubscribed().forEach(group -> {
             GroupDto groupDto = GroupDto.builder()
                     .id(group.getId())
-                    .name(group.getName())
-                    .description(group.getDescription())
-                    .build();
-            groups.add(groupDto);
-        });
-        return groups;
-    }
-
-    public List<GroupDto> getGroupsByName(String name) {
-        List<GroupDto> groups = new ArrayList<>();
-        groupRepository.findByNameContaining(name).forEach(group -> {
-            GroupDto groupDto = GroupDto.builder()
-                    .id(group.getId())
+                    .creatorId(group.getUserId())
                     .name(group.getName())
                     .description(group.getDescription())
                     .build();
@@ -84,6 +74,7 @@ public class GroupService {
         GroupEntity group = findGroup(groupId);
         return GroupDto.builder()
                 .id(group.getId())
+                .creatorId(group.getUserId())
                 .name(group.getName())
                 .description(group.getDescription())
                 .build();
@@ -106,6 +97,7 @@ public class GroupService {
 
         return GroupDto.builder()
                 .id(groupEntity.getId())
+                .creatorId(groupEntity.getUserId())
                 .name(groupEntity.getName())
                 .description(groupEntity.getDescription())
                 .build();
@@ -114,14 +106,13 @@ public class GroupService {
     public void deleteGroup(Long groupId, Long userId) {
         GroupEntity group = findGroup(groupId);
 
-        if (group.getUserId().equals(userId)) {
-            group.getMembers().forEach(user -> group.getMembers().remove(user));
-            groupRepository.save(group);
-
-            groupRepository.deleteById(groupId);
-        } else {
+        if (!group.getUserId().equals(userId)) {
             throw new Thread3rUnauthorizedException();
         }
+
+        group.getMembers().forEach(user -> group.getMembers().remove(user));
+        groupRepository.save(group);
+        groupRepository.deleteById(groupId);
     }
 
     private GroupEntity findGroup(Long groupId) {

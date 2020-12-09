@@ -3,14 +3,14 @@ package com.thread3r.thread3rbackend.controller;
 import com.thread3r.thread3rbackend.dto.GroupDto;
 import com.thread3r.thread3rbackend.security.UserDetailsImpl;
 import com.thread3r.thread3rbackend.service.GroupService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;import java.util.List;
+import javax.validation.Valid;
+import java.util.List;
 
 
 @RestController
@@ -52,9 +52,22 @@ public class GroupController {
         groupService.deleteGroup(groupId, userDetails.getId());
     }
 
-    @GetMapping("/search")
-    public List<GroupDto> searchGroups(@RequestParam String name) {
-        return groupService.getGroupsByName(name);
+    @PostMapping("/{groupId}/subscribe")
+    @ResponseStatus(HttpStatus.OK)
+    public void subscribe(@PathVariable Long groupId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        groupService.subscribeToGroup(groupId, userDetails.getId());
+    }
+
+    @PostMapping("/{groupId}/unsubscribe")
+    @ResponseStatus(HttpStatus.OK)
+    public void unsubscribe(@PathVariable Long groupId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        groupService.unsubscribeFromGroup(groupId, userDetails.getId());
     }
 
     @GetMapping("/subscribed")
@@ -71,24 +84,6 @@ public class GroupController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         return groupService.getGroupsByCreator(userDetails.getId());
-    }
-
-    @PostMapping("/subscribe/{groupId}")
-    @ResponseStatus(HttpStatus.OK)
-    public void subscribe(@PathVariable Long groupId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-        groupService.subscribeToGroup(groupId, userDetails.getId());
-    }
-
-    @PostMapping("/unsubscribe/{groupId}")
-    @ResponseStatus(HttpStatus.OK)
-    public void unsubscribe(@PathVariable Long groupId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-        groupService.unsubscribeFromGroup(groupId, userDetails.getId());
     }
 
 }

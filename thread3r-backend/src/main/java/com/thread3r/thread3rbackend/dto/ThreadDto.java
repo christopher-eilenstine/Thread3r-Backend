@@ -9,18 +9,19 @@ import javax.validation.constraints.Size;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GroupDto {
+public class ThreadDto {
 
     private Long id;
 
     private Long creatorId;
 
+    private Long groupId;
+
     @NotNull
-    @Size(min = 1, max = 45)
-    private String name;
+    @Size(min = 1, max = 60)
+    private String title;
 
     @NotNull
     @Size(min = 1, max = 600)
-    private String description;
-
+    private String content;
 }
