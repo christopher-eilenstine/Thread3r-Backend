@@ -13,6 +13,10 @@ public class ThreadDto {
 
     private Long id;
 
+    private Long creatorId;
+
+    private Long groupId;
+
     @NotNull
     @Size(min = 1, max = 60)
     private String title;

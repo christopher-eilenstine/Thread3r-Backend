@@ -1,7 +1,6 @@
 package com.thread3r.thread3rbackend.service;
 
 import com.thread3r.thread3rbackend.dto.ThreadDto;
-import com.thread3r.thread3rbackend.exception.Thread3rEntityExistsException;
 import com.thread3r.thread3rbackend.exception.Thread3rNotFoundException;
 import com.thread3r.thread3rbackend.exception.Thread3rUnauthorizedException;
 import com.thread3r.thread3rbackend.model.ThreadEntity;
@@ -13,33 +12,47 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
 public class ThreadService {
 
     private final ThreadRepository threadRepository;
-    private final GroupService groupService;
-    private final UserService userService;
     private final CommentRepository commentRepository;
+    private final UserService userService;
 
     @Autowired
-    public ThreadService(ThreadRepository threadRepository, GroupService groupService, UserService userService, CommentRepository commentRepository) {
+    public ThreadService(ThreadRepository threadRepository, CommentRepository commentRepository, UserService userService) {
         this.threadRepository = threadRepository;
-        this.groupService = groupService;
-        this.userService = userService;
         this.commentRepository = commentRepository;
+        this.userService = userService;
     }
 
-    // GET /threads
-    // Retrieve a list of threads for the current user.
-    public List<ThreadDto> getThreadsByUser(Long userId) {
+    public List<ThreadDto> getThreads(Long userId) {
         List<ThreadDto> threads = new ArrayList<>();
+        UserEntity user = userService.getUser(userId);
+        user.getSubscribed().forEach(group -> {
+           threadRepository.findByGroupId(group.getId()).forEach(thread -> {
+              ThreadDto threadDto = ThreadDto.builder()
+                      .id(thread.getId())
+                      .creatorId(thread.getUserId())
+                      .groupId(thread.getGroupId())
+                      .title(thread.getTitle())
+                      .content(thread.getContent())
+                      .build();
+              threads.add(threadDto);
+           });
+        });
+        return threads;
+    }
 
+    public List<ThreadDto> getThreadsByCreator(Long userId) {
+        List<ThreadDto> threads = new ArrayList<>();
         threadRepository.findByUserId(userId).forEach(thread -> {
             ThreadDto threadDto = ThreadDto.builder()
                     .id(thread.getId())
+                    .creatorId(thread.getUserId())
+                    .groupId(thread.getGroupId())
                     .title(thread.getTitle())
                     .content(thread.getContent())
                     .build();
@@ -48,13 +61,13 @@ public class ThreadService {
         return threads;
     }
 
-    // GET /threads/{groupId}
-    // Retrieve a list of threads for an existing group, or retrieves a single thread if an id is specified.
     public List<ThreadDto> getThreadsByGroup(Long groupId) {
         List<ThreadDto> threads = new ArrayList<>();
         threadRepository.findByGroupId(groupId).forEach(thread -> {
             ThreadDto threadDto = ThreadDto.builder()
                     .id(thread.getId())
+                    .creatorId(thread.getUserId())
+                    .groupId(thread.getGroupId())
                     .title(thread.getTitle())
                     .content(thread.getContent())
                     .build();
@@ -63,25 +76,20 @@ public class ThreadService {
         return threads;
     }
 
-    public ThreadDto getThreadById(Long threadId) {
-        if (!threadRepository.existsById(threadId)) {
-            throw new Thread3rEntityExistsException();
-        }
-
-        ThreadEntity threadEntity = findThread(threadId);
+    public ThreadDto getThreadByGroup(Long groupId, Long threadId) {
+        ThreadEntity threadEntity = findThread(groupId, threadId);
 
         return ThreadDto.builder()
                 .id(threadEntity.getId())
+                .creatorId(threadEntity.getUserId())
+                .groupId(threadEntity.getGroupId())
                 .title(threadEntity.getTitle())
                 .content(threadEntity.getContent())
                 .build();
     }
 
-    // POST /threads/{groupId}
-    // Create a new thread in an existing group.
     public ThreadDto createThread(Long userId, Long groupId, ThreadDto threadDto) {
-        ThreadEntity threadEntity;
-        threadEntity = ThreadEntity.builder()
+        ThreadEntity threadEntity = ThreadEntity.builder()
                 .groupId(groupId)
                 .userId(userId)
                 .title(threadDto.getTitle())
@@ -92,6 +100,8 @@ public class ThreadService {
 
         return ThreadDto.builder()
                 .id(threadEntity.getId())
+                .creatorId(threadEntity.getUserId())
+                .groupId(threadEntity.getGroupId())
                 .title(threadEntity.getTitle())
                 .content(threadEntity.getContent())
                 .build();
@@ -101,25 +111,19 @@ public class ThreadService {
     // PUT /threads/update/{threadId}
     // Update an existing thread.
 
-    // DELETE /threads/delete/{threadId}
-    // Delete an existing thread.
-    public void deleteThread(Long threadId, Long userId) {
-        ThreadEntity thread = findThread(threadId);
+    public void deleteThread(Long groupId, Long threadId, Long userId) {
+        ThreadEntity thread = findThread(groupId, threadId);
 
-        if (thread.getUserId().equals(userId)) {
-            // Delete associated comments.
-            commentRepository.findByThreadId(threadId).forEach(comment -> commentRepository.deleteById(comment.getId()));
-
-            threadRepository.deleteById(threadId);
-        }
-        else {
+        if (!thread.getUserId().equals(userId)) {
             throw new Thread3rUnauthorizedException();
         }
 
+        commentRepository.findByThreadId(threadId).forEach(comment -> commentRepository.deleteById(comment.getId()));
+        threadRepository.deleteById(threadId);
     }
 
-    private ThreadEntity findThread(Long threadId) {
-        Optional<ThreadEntity> threadEntity = threadRepository.findById(threadId);
+    private ThreadEntity findThread(Long groupId, Long threadId) {
+        Optional<ThreadEntity> threadEntity = threadRepository.findByGroupIdAndId(groupId, threadId);
         if (!threadEntity.isPresent()) {
             throw new Thread3rNotFoundException();
         }

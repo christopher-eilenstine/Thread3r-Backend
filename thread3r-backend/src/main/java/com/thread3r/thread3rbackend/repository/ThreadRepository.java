@@ -13,6 +13,7 @@ public interface ThreadRepository extends JpaRepository<ThreadEntity, Long> {
     List<ThreadEntity> findByUserId(Long userId);
     List<ThreadEntity> findByGroupId(Long groupId);
     Optional<ThreadEntity> findById(Long id);
+    Optional<ThreadEntity> findByGroupIdAndId(Long groupId, Long id);
     boolean existsById(Long id);
 
 }

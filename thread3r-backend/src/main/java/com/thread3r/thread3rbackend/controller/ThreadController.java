@@ -10,11 +10,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/threads")
+@RequestMapping("/api")
 @CrossOrigin(origins = {"http://localhost:3000"})
 public class ThreadController {
 
@@ -25,32 +24,27 @@ public class ThreadController {
         this.threadService = threadService;
     }
 
-    // GET /threads
-    // Retrieve a list of threads for the current user.
-    @GetMapping
-    public List<ThreadDto> getThreadsByUser() {
+    @GetMapping("/groups/threads")
+    public List<ThreadDto> getThreads() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        return threadService.getThreads(userDetails.getId());
+    }
+
+    @GetMapping("/groups/threads/created")
+    public List<ThreadDto> getThreadsByCreator() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        return threadService.getThreadsByUser(userDetails.getId());
+        return threadService.getThreadsByCreator(userDetails.getId());
     }
 
-    // GET /threads/{groupId}
-    // Retrieve a list of threads for an existing group, or retrieves a single thread if an id is specified.
-    @GetMapping("/{groupId}")
-    public List<ThreadDto> getThreadsByGroup(@PathVariable Long groupId, @RequestParam(value = "threadId", required = false) Long threadId) {
-        if (threadId == null) {
-            ThreadDto thread = threadService.getThreadById(threadId);
-            List<ThreadDto> threads = new ArrayList<>();
-            threads.add(thread);
-            return threads;
-        }
+    @GetMapping("/groups/{groupId}/threads")
+    public List<ThreadDto> getThreadsByGroup(@PathVariable Long groupId) {
         return threadService.getThreadsByGroup(groupId);
     }
 
-    // POST /threads/{groupId}
-    // Create a new thread in an existing group.
-    @PostMapping("/{groupId}")
+    @PostMapping("/groups/{groupId}/threads")
     public ThreadDto createThread(@PathVariable Long groupId, @Valid @RequestBody ThreadDto request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
@@ -58,19 +52,21 @@ public class ThreadController {
         return threadService.createThread(userDetails.getId(), groupId, request);
     }
 
-    //TODO?:
-    // PUT /threads/update/{threadId}
-    // Update an existing thread.
+    @GetMapping("/groups/{groupId}/threads/{threadId}")
+    public ThreadDto getThread(@PathVariable Long groupId, @PathVariable Long threadId) {
+        return threadService.getThreadByGroup(groupId, threadId);
+    }
 
-    // DELETE /threads/delete/{threadId}
-    // Delete an existing thread.
-    @DeleteMapping("/delete/{threadId}")
+    @DeleteMapping("/groups/{groupId}/threads/{threadId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteThread(@PathVariable Long threadId) {
+    public void deleteThread(@PathVariable Long groupId, @PathVariable Long threadId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        threadService.deleteThread(threadId, userDetails.getId());
+        threadService.deleteThread(groupId, threadId, userDetails.getId());
     }
 
+    //TODO?:
+    // PUT /threads/update/{threadId}
+    // Update an existing thread.
 }

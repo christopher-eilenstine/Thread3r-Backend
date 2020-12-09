@@ -13,6 +13,8 @@ public class GroupDto {
 
     private Long id;
 
+    private Long creatorId;
+
     @NotNull
     @Size(min = 1, max = 45)
     private String name;
