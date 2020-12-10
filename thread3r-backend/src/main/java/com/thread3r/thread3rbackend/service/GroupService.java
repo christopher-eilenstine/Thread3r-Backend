@@ -32,7 +32,8 @@ public class GroupService {
         groupRepository.findAll().forEach(group -> {
             GroupDto groupDto = GroupDto.builder()
                     .id(group.getId())
-                    .creatorId(group.getUserId())
+                    .created(group.getCreatedTimestamp())
+                    .creator(group.getUserId())
                     .name(group.getName())
                     .description(group.getDescription())
                     .build();
@@ -46,7 +47,8 @@ public class GroupService {
         groupRepository.findByUserId(userId).forEach(group -> {
             GroupDto groupDto = GroupDto.builder()
                     .id(group.getId())
-                    .creatorId(group.getUserId())
+                    .created(group.getCreatedTimestamp())
+                    .creator(group.getUserId())
                     .name(group.getName())
                     .description(group.getDescription())
                     .build();
@@ -61,7 +63,8 @@ public class GroupService {
         user.getSubscribed().forEach(group -> {
             GroupDto groupDto = GroupDto.builder()
                     .id(group.getId())
-                    .creatorId(group.getUserId())
+                    .created(group.getCreatedTimestamp())
+                    .creator(group.getUserId())
                     .name(group.getName())
                     .description(group.getDescription())
                     .build();
@@ -74,7 +77,8 @@ public class GroupService {
         GroupEntity group = findGroup(groupId);
         return GroupDto.builder()
                 .id(group.getId())
-                .creatorId(group.getUserId())
+                .created(group.getCreatedTimestamp())
+                .creator(group.getUserId())
                 .name(group.getName())
                 .description(group.getDescription())
                 .build();
@@ -97,7 +101,8 @@ public class GroupService {
 
         return GroupDto.builder()
                 .id(groupEntity.getId())
-                .creatorId(groupEntity.getUserId())
+                .created(groupEntity.getCreatedTimestamp())
+                .creator(groupEntity.getUserId())
                 .name(groupEntity.getName())
                 .description(groupEntity.getDescription())
                 .build();

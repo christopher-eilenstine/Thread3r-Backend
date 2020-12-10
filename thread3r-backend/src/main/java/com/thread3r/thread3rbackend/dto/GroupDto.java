@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -13,7 +14,9 @@ public class GroupDto {
 
     private Long id;
 
-    private Long creatorId;
+    private LocalDateTime created;
+
+    private Long creator;
 
     @NotNull
     @Size(min = 1, max = 45)
