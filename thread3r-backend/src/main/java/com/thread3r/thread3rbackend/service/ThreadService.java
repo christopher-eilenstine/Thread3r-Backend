@@ -31,18 +31,19 @@ public class ThreadService {
     public List<ThreadDto> getThreads(Long userId) {
         List<ThreadDto> threads = new ArrayList<>();
         UserEntity user = userService.getUser(userId);
-        user.getSubscribed().forEach(group -> {
-           threadRepository.findByGroupId(group.getId()).forEach(thread -> {
-              ThreadDto threadDto = ThreadDto.builder()
-                      .id(thread.getId())
-                      .creatorId(thread.getUserId())
-                      .groupId(thread.getGroupId())
-                      .title(thread.getTitle())
-                      .content(thread.getContent())
-                      .build();
-              threads.add(threadDto);
-           });
-        });
+        user.getSubscribed().forEach(group ->
+                threadRepository.findByGroupId(group.getId()).forEach(thread -> {
+                   ThreadDto threadDto = ThreadDto.builder()
+                           .id(thread.getId())
+                           .created(thread.getCreatedTimestamp())
+                           .creator(thread.getUserId())
+                           .group(thread.getGroupId())
+                           .title(thread.getTitle())
+                           .content(thread.getContent())
+                           .build();
+                   threads.add(threadDto);
+            })
+        );
         return threads;
     }
 
@@ -51,8 +52,9 @@ public class ThreadService {
         threadRepository.findByUserId(userId).forEach(thread -> {
             ThreadDto threadDto = ThreadDto.builder()
                     .id(thread.getId())
-                    .creatorId(thread.getUserId())
-                    .groupId(thread.getGroupId())
+                    .created(thread.getCreatedTimestamp())
+                    .creator(thread.getUserId())
+                    .group(thread.getGroupId())
                     .title(thread.getTitle())
                     .content(thread.getContent())
                     .build();
@@ -66,8 +68,9 @@ public class ThreadService {
         threadRepository.findByGroupId(groupId).forEach(thread -> {
             ThreadDto threadDto = ThreadDto.builder()
                     .id(thread.getId())
-                    .creatorId(thread.getUserId())
-                    .groupId(thread.getGroupId())
+                    .created(thread.getCreatedTimestamp())
+                    .creator(thread.getUserId())
+                    .group(thread.getGroupId())
                     .title(thread.getTitle())
                     .content(thread.getContent())
                     .build();
@@ -81,8 +84,9 @@ public class ThreadService {
 
         return ThreadDto.builder()
                 .id(threadEntity.getId())
-                .creatorId(threadEntity.getUserId())
-                .groupId(threadEntity.getGroupId())
+                .created(threadEntity.getCreatedTimestamp())
+                .creator(threadEntity.getUserId())
+                .group(threadEntity.getGroupId())
                 .title(threadEntity.getTitle())
                 .content(threadEntity.getContent())
                 .build();
@@ -100,8 +104,9 @@ public class ThreadService {
 
         return ThreadDto.builder()
                 .id(threadEntity.getId())
-                .creatorId(threadEntity.getUserId())
-                .groupId(threadEntity.getGroupId())
+                .created(threadEntity.getCreatedTimestamp())
+                .creator(threadEntity.getUserId())
+                .group(threadEntity.getGroupId())
                 .title(threadEntity.getTitle())
                 .content(threadEntity.getContent())
                 .build();
