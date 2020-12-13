@@ -33,7 +33,8 @@ public class GroupService {
             GroupDto groupDto = GroupDto.builder()
                     .id(group.getId())
                     .created(group.getCreatedTimestamp())
-                    .creator(group.getUserId())
+                    .creatorId(group.getUserId())
+                    .creator(userService.getUsername(group.getUserId()))
                     .name(group.getName())
                     .description(group.getDescription())
                     .build();
@@ -48,7 +49,8 @@ public class GroupService {
             GroupDto groupDto = GroupDto.builder()
                     .id(group.getId())
                     .created(group.getCreatedTimestamp())
-                    .creator(group.getUserId())
+                    .creatorId(group.getUserId())
+                    .creator(userService.getUsername(group.getUserId()))
                     .name(group.getName())
                     .description(group.getDescription())
                     .build();
@@ -64,7 +66,8 @@ public class GroupService {
             GroupDto groupDto = GroupDto.builder()
                     .id(group.getId())
                     .created(group.getCreatedTimestamp())
-                    .creator(group.getUserId())
+                    .creatorId(group.getUserId())
+                    .creator(userService.getUsername(group.getUserId()))
                     .name(group.getName())
                     .description(group.getDescription())
                     .build();
@@ -78,7 +81,8 @@ public class GroupService {
         return GroupDto.builder()
                 .id(group.getId())
                 .created(group.getCreatedTimestamp())
-                .creator(group.getUserId())
+                .creatorId(group.getUserId())
+                .creator(userService.getUsername(group.getUserId()))
                 .name(group.getName())
                 .description(group.getDescription())
                 .build();
@@ -102,7 +106,8 @@ public class GroupService {
         return GroupDto.builder()
                 .id(groupEntity.getId())
                 .created(groupEntity.getCreatedTimestamp())
-                .creator(groupEntity.getUserId())
+                .creatorId(groupEntity.getUserId())
+                .creator(userService.getUsername(groupEntity.getUserId()))
                 .name(groupEntity.getName())
                 .description(groupEntity.getDescription())
                 .build();

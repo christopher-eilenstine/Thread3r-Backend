@@ -16,7 +16,9 @@ public class GroupDto {
 
     private LocalDateTime created;
 
-    private Long creator;
+    private Long creatorId;
+
+    private String creator;
 
     @NotNull
     @Size(min = 1, max = 45)

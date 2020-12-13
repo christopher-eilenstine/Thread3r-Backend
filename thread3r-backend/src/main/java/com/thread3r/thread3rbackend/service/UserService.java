@@ -26,4 +26,12 @@ public class UserService {
         return user.get();
     }
 
+    public String getUsername(Long userId) {
+        Optional<UserEntity> user = userRepository.findById(userId);
+        if (!user.isPresent()) {
+            throw new Thread3rNotFoundException();
+        }
+        return user.get().getUsername();
+    }
+
 }

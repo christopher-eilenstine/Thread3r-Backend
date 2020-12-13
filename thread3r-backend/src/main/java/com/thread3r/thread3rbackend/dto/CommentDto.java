@@ -20,7 +20,9 @@ public class CommentDto {
 
     private Long thread;
 
-    private Long creator;
+    private Long creatorId;
+
+    private String creator;
 
     @NotNull
     private String content;

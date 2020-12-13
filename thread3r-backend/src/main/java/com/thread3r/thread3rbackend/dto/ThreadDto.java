@@ -16,7 +16,9 @@ public class ThreadDto {
 
     private LocalDateTime created;
 
-    private Long creator;
+    private Long creatorId;
+
+    private String creator;
 
     private Long group;
 

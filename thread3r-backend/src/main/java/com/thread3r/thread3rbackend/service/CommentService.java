@@ -16,10 +16,12 @@ import java.util.Optional;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final UserService userService;
 
     @Autowired
-    public CommentService(CommentRepository commentRepository) {
+    public CommentService(CommentRepository commentRepository, UserService userService) {
         this.commentRepository = commentRepository;
+        this.userService = userService;
     }
 
     public List<CommentDto> getCommentsByCreator(Long userId) {
@@ -29,7 +31,8 @@ public class CommentService {
                     .id(comment.getId())
                     .created(comment.getCreatedTimestamp())
                     .thread(comment.getThreadId())
-                    .creator(comment.getUserId())
+                    .creatorId(comment.getUserId())
+                    .creator(userService.getUsername(comment.getUserId()))
                     .content(comment.getContent())
                     .build();
             comments.add(commentDto);
@@ -44,7 +47,8 @@ public class CommentService {
                     .id(comment.getId())
                     .created(comment.getCreatedTimestamp())
                     .thread(comment.getThreadId())
-                    .creator(comment.getUserId())
+                    .creatorId(comment.getUserId())
+                    .creator(userService.getUsername(comment.getUserId()))
                     .content(comment.getContent())
                     .build();
             comments.add(commentDto);
@@ -64,7 +68,8 @@ public class CommentService {
         return CommentDto.builder()
                 .id(commentEntity.getId())
                 .created(commentEntity.getCreatedTimestamp())
-                .creator(commentEntity.getUserId())
+                .creatorId(commentEntity.getUserId())
+                .creator(userService.getUsername(commentEntity.getUserId()))
                 .thread(commentEntity.getThreadId())
                 .content(commentEntity.getContent())
                 .build();
