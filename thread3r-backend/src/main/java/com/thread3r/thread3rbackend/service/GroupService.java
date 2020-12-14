@@ -91,7 +91,7 @@ public class GroupService {
 
     public GroupDto createGroup(Long userId, GroupDto groupDto) {
         GroupEntity groupEntity = groupRepository.findByName(groupDto.getName()).orElse(null);
-        if (groupEntity == null) {
+        if (groupEntity != null) {
             throw new Thread3rEntityExistsException();
         }
         groupEntity = GroupEntity.builder()
