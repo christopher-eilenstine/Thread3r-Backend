@@ -1,6 +1,7 @@
 package com.thread3r.thread3rbackend.service;
 
 import com.thread3r.thread3rbackend.dto.GroupDto;
+import com.thread3r.thread3rbackend.exception.Thread3rBadRequestException;
 import com.thread3r.thread3rbackend.exception.Thread3rEntityExistsException;
 import com.thread3r.thread3rbackend.exception.Thread3rNotFoundException;
 import com.thread3r.thread3rbackend.exception.Thread3rUnauthorizedException;
@@ -138,15 +139,24 @@ public class GroupService {
         if (groupEntity == null) {
             throw new Thread3rNotFoundException();
         }
+
+        groupEntity.getMembers().forEach(member -> {
+            if (member.getId().equals(userId)) {
+                throw new Thread3rBadRequestException();
+            }
+        });
+
         groupEntity.getMembers().add(userService.getUser(userId));
         groupRepository.save(groupEntity);
     }
 
-    // TODO: Add validation to prevent the creator of a group from unsubscribing from it
     public void unsubscribeFromGroup(Long groupId, Long userId) {
         GroupEntity groupEntity = groupRepository.findById(groupId).orElse(null);
         if (groupEntity == null) {
             throw new Thread3rNotFoundException();
+        }
+        if (groupEntity.getUserId().equals(userId)) {
+            throw new Thread3rBadRequestException();
         }
         groupEntity.getMembers().removeIf(member -> member.getId().equals(userId));
         groupRepository.save(groupEntity);
