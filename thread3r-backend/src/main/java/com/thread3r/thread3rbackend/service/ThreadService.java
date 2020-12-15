@@ -121,6 +121,15 @@ public class ThreadService {
     // PUT /threads/update/{threadId}
     // Update an existing thread.
 
+    public void deleteThreadsByGroup(Long groupId) {
+        threadRepository.findByGroupId(groupId).forEach(thread -> {
+            commentRepository.findByThreadId(thread.getId()).forEach(comment -> {
+                commentRepository.deleteById(comment.getId());
+            });
+            threadRepository.deleteById(thread.getId());
+        });
+    }
+
     public void deleteThread(Long groupId, Long threadId, Long userId) {
         ThreadEntity thread = findThread(groupId, threadId);
 

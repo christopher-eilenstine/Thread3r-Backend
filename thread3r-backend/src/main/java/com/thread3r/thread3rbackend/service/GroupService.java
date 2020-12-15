@@ -20,11 +20,13 @@ import java.util.Optional;
 public class GroupService {
 
     private final GroupRepository groupRepository;
+    private final ThreadService threadService;
     private final UserService userService;
 
     @Autowired
-    public GroupService(GroupRepository groupRepository, UserService userService) {
+    public GroupService(GroupRepository groupRepository, ThreadService threadService, UserService userService) {
         this.groupRepository = groupRepository;
+        this.threadService = threadService;
         this.userService = userService;
     }
 
@@ -123,6 +125,9 @@ public class GroupService {
 
         group.getMembers().forEach(user -> group.getMembers().remove(user));
         groupRepository.save(group);
+
+        threadService.deleteThreadsByGroup(groupId);
+
         groupRepository.deleteById(groupId);
     }
 

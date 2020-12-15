@@ -98,4 +98,10 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
+    public void deleteCommentsByThread(Long threadId) {
+        commentRepository.findByThreadId(threadId).forEach(comment -> {
+            commentRepository.deleteById(comment.getId());
+        });
+    }
+
 }
