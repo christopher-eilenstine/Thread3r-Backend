@@ -21,6 +21,8 @@ public class CommentDto {
 
     private Long thread;
 
+    private Long group;
+
     private Long creatorId;
 
     private String creator;

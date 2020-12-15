@@ -13,6 +13,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Entity
 @Table(name = "thread3r_comment", indexes = {
+        @Index(columnList = "group_id", name = "ix_comment_groupid"),
         @Index(columnList = "thread_id", name = "ix_comment_threadid"),
         @Index(columnList = "user_id", name = "ix_comment_userid")
 })
@@ -22,6 +23,9 @@ public class CommentEntity extends Thread3rEntity {
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "group_id", nullable = false)
+    private Long groupId;
 
     @Column(name = "thread_id", nullable = false)
     private Long threadId;
