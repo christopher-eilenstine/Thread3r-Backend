@@ -3,6 +3,7 @@ package com.thread3r.thread3rbackend.service;
 import com.thread3r.thread3rbackend.dto.CommentDto;
 import com.thread3r.thread3rbackend.model.CommentEntity;
 import com.thread3r.thread3rbackend.repository.CommentRepository;
+import com.thread3r.thread3rbackend.repository.ThreadRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +24,8 @@ public class CommentServiceTest {
     private CommentRepository commentRepository;
     @Mock
     private UserService userService;
+    @Mock
+    private ThreadRepository threadRepository;
 
     private CommentEntity commentEntity;
 

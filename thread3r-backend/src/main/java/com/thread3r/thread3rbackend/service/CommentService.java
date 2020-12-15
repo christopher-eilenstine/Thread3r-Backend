@@ -4,7 +4,9 @@ import com.thread3r.thread3rbackend.dto.CommentDto;
 import com.thread3r.thread3rbackend.exception.Thread3rNotFoundException;
 import com.thread3r.thread3rbackend.exception.Thread3rUnauthorizedException;
 import com.thread3r.thread3rbackend.model.CommentEntity;
+import com.thread3r.thread3rbackend.model.ThreadEntity;
 import com.thread3r.thread3rbackend.repository.CommentRepository;
+import com.thread3r.thread3rbackend.repository.ThreadRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +19,13 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final UserService userService;
+    private final ThreadRepository threadRepository;
 
     @Autowired
-    public CommentService(CommentRepository commentRepository, UserService userService) {
+    public CommentService(CommentRepository commentRepository, UserService userService, ThreadRepository threadRepository) {
         this.commentRepository = commentRepository;
         this.userService = userService;
+        this.threadRepository = threadRepository;
     }
 
     public List<CommentDto> getCommentsByCreator(Long userId) {
@@ -31,6 +35,7 @@ public class CommentService {
                     .id(comment.getId())
                     .created(comment.getCreatedTimestamp())
                     .thread(comment.getThreadId())
+                    .group(comment.getGroupId())
                     .creatorId(comment.getUserId())
                     .creator(userService.getUsername(comment.getUserId()))
                     .content(comment.getContent())
@@ -47,6 +52,7 @@ public class CommentService {
                     .id(comment.getId())
                     .created(comment.getCreatedTimestamp())
                     .thread(comment.getThreadId())
+                    .group(comment.getGroupId())
                     .creatorId(comment.getUserId())
                     .creator(userService.getUsername(comment.getUserId()))
                     .content(comment.getContent())
@@ -57,9 +63,14 @@ public class CommentService {
     }
 
     public CommentDto createComment(Long userId, Long threadId, CommentDto commentDto) {
+        ThreadEntity threadEntity = threadRepository.findById(threadId).orElse(null);
+        if (threadEntity == null) {
+            throw new Thread3rNotFoundException();
+        }
         CommentEntity commentEntity = CommentEntity.builder()
                 .userId(userId)
                 .threadId(threadId)
+                .groupId(threadEntity.getGroupId())
                 .content(commentDto.getContent())
                 .build();
 
@@ -71,6 +82,7 @@ public class CommentService {
                 .creatorId(commentEntity.getUserId())
                 .creator(userService.getUsername(commentEntity.getUserId()))
                 .thread(commentEntity.getThreadId())
+                .group(commentEntity.getGroupId())
                 .content(commentEntity.getContent())
                 .build();
     }
